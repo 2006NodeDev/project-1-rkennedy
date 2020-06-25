@@ -8,3 +8,7 @@ npm install -D typescript ts-node @types/express.
 	Commited and pushed
 Create errors folder in src
 Create errors in that folder
+	Commited and pushed
+Create models folder in src
+Create models in that folder
+	Commited and pushed
