@@ -12,3 +12,6 @@ Create errors in that folder
 Create models folder in src
 Create models in that folder
 	Commited and pushed
+Create middleware folder in src
+Create middleware in that folder
+	Committed and pushed
