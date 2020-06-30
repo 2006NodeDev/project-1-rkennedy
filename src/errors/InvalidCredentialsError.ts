@@ -1,6 +1,6 @@
 import { HttpError } from "./HttpError";
 
-export abstract class InvaildCredentialsError extends Error {
+export class InvalidCredentialsError extends HttpError {
 	constructor(){
         super(401, 'Your Credentials are Invalid')
     }

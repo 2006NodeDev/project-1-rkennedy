@@ -15,3 +15,5 @@ Create models in that folder
 Create middleware folder in src
 Create middleware in that folder
 	Committed and pushed
+Created index.ts
+Created daos, routers, and utils folders in src

@@ -1,7 +1,7 @@
 import { HttpError } from "./HttpError";
 
-export abstract class AuthFailureError extends Error {
-constructor(){
+export class AuthFailureError extends HttpError {
+    constructor(){
         super(401, 'Authenication Failed')
     }
 }
