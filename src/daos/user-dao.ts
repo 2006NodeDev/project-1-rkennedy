@@ -14,8 +14,8 @@ export async function getAllUsers():Promise<User[]>{
     try {
         client = await connectionPool.connect();
         let results:QueryResult = await client.query(`select u.user_id, u.username, u.password, u.first_name, u.last_name, u.email, r.role_id, r."role" 
-                                                        from project-0-rkennedy98.users u
-                                                        join project-0-rkennedy98.roles r on u."role" = r.role_id
+                                                        from fluffers_reimbursement.users u
+                                                        join fluffers_reimbursement.roles r on u."role" = r.role_id
                                                         group by u.user_id, u.username, u.first_name, u.last_name, u.email, r.role_id, r."role"
                                                         order by u.user_id;`);
         
@@ -42,8 +42,8 @@ export async function getByUsernameAndPassword(username:string, password:string)
     try {
         client = await connectionPool.connect();
         let results = await client.query(`select u.user_id, u.username, u.password, u.first_name, u.last_name, u.email, r.role_id, r."role" 
-                                            from project-0-rkennedy98.users u
-                                            join project-0-rkennedy98.roles r on u."role" = r.role_id
+                                            from fluffers_reimbursement.users u
+                                            join fluffers_reimbursement.roles r on u."role" = r.role_id
                                             where u."username" = $1 and u."password" = $2
                                             group by u.user_id, u.username, u.first_name, u.last_name, u.email, r.role_id, r."role"`,
                                             [username, password]); // paramaterized queries, pg auto sanitizes
@@ -67,8 +67,8 @@ export async function getUserById(id:number):Promise<User>{
     try {
         client = await connectionPool.connect();
         let results:QueryResult = await client.query(`select u.user_id, u.username, u.password, u.first_name, u.last_name, u.email, r.role_id, r."role" 
-        from project-0-rkennedy98.users u
-        join project-0-rkennedy98.roles r on u."role" = r.role_id
+        from fluffers_reimbursement.users u
+        join fluffers_reimbursement.roles r on u."role" = r.role_id
         where u.user_id = $1`, [id]); // parameterized queries
 
         return UserDTOtoUserConvertor(results.rows[0]);
@@ -91,7 +91,7 @@ export async function updateUser(updatedUser:User):Promise<User>{
     try{
         client = await connectionPool.connect()
 
-        await client.query(`update project-0-rkennedy98.users 
+        await client.query(`update fluffers_reimbursement.users 
                                             set "username" = $1, "password" = $2, "first_name" = $3, "last_name" = $4, "email" = $5, "role" = $6
                                             where user_id = $7 returning "user_id" `,
                                             [updatedUser.username, updatedUser.password, updatedUser.firstName, updatedUser.lastName, updatedUser.email, updatedUser.role.roleId, updatedUser.userId])
@@ -113,14 +113,14 @@ export async function saveOneUser(newUser:User):Promise<User> {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
         let roleId = await client.query(`select r."role_id" 
-                                        from project-0-rkennedy98.roles r 
+                                        from fluffers_reimbursement.roles r 
                                         where r."role" = $1`,
                                         [newUser.role])
         if(roleId.rowCount === 0) {
             throw new Error('Role Not Found')
         }
         roleId = roleId.rows[0].role_id
-        let results = await client.query(`insert into project-0-rkennedy98.users 
+        let results = await client.query(`insert into fluffers_reimbursement.users 
                                         ("username", "password", 
                                             "first_name", "last_name", 
                                             "email", "role")

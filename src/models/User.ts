@@ -7,6 +7,5 @@ export class User{
       firstName: string; // not null
       lastName: string; // not null
       email: string; // not null
-      //should this be role: Role???
       role: Role; // not null
 }

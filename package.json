@@ -1,5 +1,5 @@
 {
-  "name": "project-0-rkennedy98",
+  "name": "fluffers_reimbursement",
   "version": "1.0.0",
   "description": "The Expense Reimbursement System (ERS) will manage the process of reimbursing employees for expenses incurred while on company time. All employees in the company can login and submit requests for reimbursement and view their past tickets and pending requests. Finance managers can log in and view all reimbursement requests and past history for all employees in the company. Finance managers are authorized to approve and deny requests for expense reimbursement.",
   "main": "src/index.ts",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/2006NodeDev/project-0-rkennedy98.git"
+    "url": "git+https://github.com/2006NodeDev/fluffers_reimbursement.git"
   },
   "author": "Rachel Kennedy",
   "license": "ISC",
