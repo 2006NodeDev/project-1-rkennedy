@@ -41,9 +41,9 @@ export async function getByUsernameAndPassword(username:string, password:string)
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.role_id, r."role" 
+        let results = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.roleId, r."role" 
                                             from fluffers_reimbursement.users u
-                                            join fluffers_reimbursement.roles r on u."role" = r.role_id
+                                            join fluffers_reimbursement.roles r on u."role" = r.roleId
                                             where u."username" = $1 and u."password" = $2
                                             group by u.userid, u.username, u.firstname, u.lastName, u.email, r.roleId, r."role"`,
                                             [username, password]); // paramaterized queries, pg auto sanitizes
@@ -92,8 +92,8 @@ export async function updateUser(updatedUser:User):Promise<User>{
         client = await connectionPool.connect()
 
         await client.query(`update fluffers_reimbursement.users 
-                                            set "username" = $1, "password" = $2, "first_name" = $3, "last_name" = $4, "email" = $5, "role" = $6
-                                            where user_id = $7 returning "user_id" `,
+                                            set "username" = $1, "password" = $2, "firstName" = $3, "lastName" = $4, "email" = $5, "role" = $6
+                                            where userId = $7 returning "userId" `,
                                             [updatedUser.username, updatedUser.password, updatedUser.firstName, updatedUser.lastName, updatedUser.email, updatedUser.role.roleId, updatedUser.userid])
         return getUserById(updatedUser.userid);
 
@@ -112,24 +112,24 @@ export async function saveOneUser(newUser:User):Promise<User> {
     try {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
-        let roleId = await client.query(`select r."role_id" 
+        let roleId = await client.query(`select r."roleId" 
                                         from fluffers_reimbursement.roles r 
                                         where r."role" = $1`,
                                         [newUser.role])
         if(roleId.rowCount === 0) {
             throw new Error('Role Not Found')
         }
-        roleId = roleId.rows[0].role_id
+        roleId = roleId.rows[0].roleId
         let results = await client.query(`insert into fluffers_reimbursement.users 
                                         ("username", "password", 
-                                            "first_name", "last_name", 
+                                            "firstName", "lastName", 
                                             "email", "role")
                                         values($1,$2,$3,$4,$5,$6) 
-                                        returning "user_id"`,
+                                        returning "userId"`,
                                         [newUser.username, newUser.password, 
                                             newUser.firstName, newUser.lastName, 
                                             newUser.email, roleId])
-        newUser.userid = results.rows[0].user_id
+        newUser.userid = results.rows[0].userId
         await client.query('COMMIT;')
         return newUser
     } catch (e) {
