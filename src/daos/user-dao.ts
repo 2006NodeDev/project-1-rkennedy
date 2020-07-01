@@ -13,11 +13,11 @@ export async function getAllUsers():Promise<User[]>{
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results:QueryResult = await client.query(`select u.user_id, u.username, u.password, u.first_name, u.last_name, u.email, r.role_id, r."role" 
-                                                        from fluffers_reimbursement.users u
-                                                        join fluffers_reimbursement.roles r on u."role" = r.role_id
-                                                        group by u.user_id, u.username, u.first_name, u.last_name, u.email, r.role_id, r."role"
-                                                        order by u.user_id;`);
+        let results:QueryResult = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.roleId, r."role" 
+                                                        from fluffers_reimbursement."User" u
+                                                        join fluffers_reimbursement."Role" r on u."role" = r.roleId
+                                                        group by u.userid, u.username, u.firstname, u.lastName, u.email, r.roleId, r."role"
+                                                        order by u.userid;`);
         
         if (results.rowCount === 0){
             throw new Error('No Users Found');
@@ -41,11 +41,11 @@ export async function getByUsernameAndPassword(username:string, password:string)
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results = await client.query(`select u.user_id, u.username, u.password, u.first_name, u.last_name, u.email, r.role_id, r."role" 
+        let results = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.role_id, r."role" 
                                             from fluffers_reimbursement.users u
                                             join fluffers_reimbursement.roles r on u."role" = r.role_id
                                             where u."username" = $1 and u."password" = $2
-                                            group by u.user_id, u.username, u.first_name, u.last_name, u.email, r.role_id, r."role"`,
+                                            group by u.userid, u.username, u.firstname, u.lastName, u.email, r.roleId, r."role"`,
                                             [username, password]); // paramaterized queries, pg auto sanitizes
 
         if (results.rowCount === 0){
@@ -66,10 +66,10 @@ export async function getUserById(id:number):Promise<User>{
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results:QueryResult = await client.query(`select u.user_id, u.username, u.password, u.first_name, u.last_name, u.email, r.role_id, r."role" 
+        let results:QueryResult = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.roleId, r."role" 
         from fluffers_reimbursement.users u
-        join fluffers_reimbursement.roles r on u."role" = r.role_id
-        where u.user_id = $1`, [id]); // parameterized queries
+        join fluffers_reimbursement.roles r on u."role" = r.roleId
+        where u.userid = $1`, [id]); // parameterized queries
 
         return UserDTOtoUserConvertor(results.rows[0]);
 
@@ -94,8 +94,8 @@ export async function updateUser(updatedUser:User):Promise<User>{
         await client.query(`update fluffers_reimbursement.users 
                                             set "username" = $1, "password" = $2, "first_name" = $3, "last_name" = $4, "email" = $5, "role" = $6
                                             where user_id = $7 returning "user_id" `,
-                                            [updatedUser.username, updatedUser.password, updatedUser.firstName, updatedUser.lastName, updatedUser.email, updatedUser.role.roleId, updatedUser.userId])
-        return getUserById(updatedUser.userId);
+                                            [updatedUser.username, updatedUser.password, updatedUser.firstName, updatedUser.lastName, updatedUser.email, updatedUser.role.roleId, updatedUser.userid])
+        return getUserById(updatedUser.userid);
 
     }catch(e){
         console.log(e)
@@ -129,7 +129,7 @@ export async function saveOneUser(newUser:User):Promise<User> {
                                         [newUser.username, newUser.password, 
                                             newUser.firstName, newUser.lastName, 
                                             newUser.email, roleId])
-        newUser.userId = results.rows[0].user_id
+        newUser.userid = results.rows[0].user_id
         await client.query('COMMIT;')
         return newUser
     } catch (e) {

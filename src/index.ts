@@ -14,5 +14,5 @@ import { sessionMiddleware } from "./middleware/session-middleware"
     app.use("/users", userRouter)
     app.use("/reimbursements", reimbursementRouter)
     app.listen(2020, () => {
-        console.log("Server has started!")
+        console.log("Yay! Server has started!")
     })

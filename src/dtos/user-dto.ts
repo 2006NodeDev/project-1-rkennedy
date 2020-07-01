@@ -1,7 +1,7 @@
 import { Role } from "../models/Role"
 
 export class UserDTO {
-    userId:number
+    userid:number
     username:string
     password:string
     firstName:string

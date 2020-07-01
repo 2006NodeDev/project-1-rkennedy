@@ -12,7 +12,7 @@ create table Roles (
 );
 
 create table Users (
-	userId serial primary key,
+	userid serial primary key,
 	username text not null unique,
 	"password" text not null,
 	firstName text not null,
@@ -33,13 +33,13 @@ create table ReimbursementTypes (
 
 create table Reimbursements(
 	reimbursementId serial primary key,
-	author int references users (userId) not null,
+	author int references users (userid) not null,
 	amount numeric(10, 2) not null,
 	--needs to be date
 	dateSubmitted date not null,
 	dateResolved date,
 	description text not null,
-	resolver int references users (userId),
+	resolver int references users (userid),
 	status int references ReimbursementStatus (statusId) not null,
 	"type" int references ReimbursementTypes (typeId)
 );
@@ -52,11 +52,11 @@ values (2, 'Financial Manager');
 insert into Roles (roleId, role)
 values (3, 'User');
 
-insert into Users (userId, username, password, email, role, firstName, lastName) 
+insert into Users (userid, username, password, email, role, firstName, lastName) 
 values(1, 'dpeterson', 'password', 'dpeterson@fluffers.com', 1, 'David', 'Peterson');
-insert into Users (userId, username, password, email, role, firstName, lastName) 
+insert into Users (userid, username, password, email, role, firstName, lastName) 
 values(2, 'lchoi', 'password', 'lchoi@fluffers.com', 2, 'Lenny', 'Choi');
-insert into Users (userId, username, password, email, role, firstName, lastName) 
+insert into Users (userid, username, password, email, role, firstName, lastName) 
 values(3, 'okay', 'password', 'okay@fluffers.com', 3, 'Orion', 'Kay');
 
 insert into ReimbursementStatus (statusId, status)

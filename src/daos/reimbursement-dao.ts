@@ -30,7 +30,7 @@ export async function getAllReimbursements():Promise<Reimbursement[]>{
     }
 }
 // Get Reimbursement by User Id
-export async function getReimbursementByUserId(userId:number):Promise<Reimbursement[]> {
+export async function getReimbursementByuserid(userid:number):Promise<Reimbursement[]> {
     let client:PoolClient
     try {
         client = await connectionPool.connect()
@@ -49,7 +49,7 @@ export async function getReimbursementByUserId(userId:number):Promise<Reimbursem
                                             left join fluffers_reimbursement.users u 
                                                 on r."author" = u."user_id"
                                                     where u."user_id" = $1
-                                            order by r.date_submitted;`, [userId])
+                                            order by r.date_submitted;`, [userid])
         if(results.rowCount === 0) {
             throw new Error('Reimbursement Not Found')
         }

@@ -7,7 +7,7 @@ import { ReimbursementIdInputError } from '../errors/ReimbursementInputError'
 //import { authorizationMiddleware } from '../middleware/authorization-middleware'
 export const reimbursementRouter = express.Router()
 reimbursementRouter.use('/status', reimbursementStatusRouter)
-reimbursementRouter.use('/author/userId', reimbursementAuthorRouter)
+reimbursementRouter.use('/author/userid', reimbursementAuthorRouter)
 // Save (Create) Reimbursement
 reimbursementRouter.post('/', async (req:Request, res:Response, next:NextFunction) => {
     console.log(req.body);

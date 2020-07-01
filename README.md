@@ -7,7 +7,7 @@ The Expense Reimbursement System (ERS) will manage the process of reimbursing em
 The User model keeps track of users information.
 ```javascript
 {
-  userId: number, // primary key
+  userid: number, // primary key
 	username: string, // not null, unique
 	password: string, // not null
 	firstName: string, // not null
@@ -147,7 +147,7 @@ The ReimbursementType model is used to track what kind of reimbursement is being
 * **Allowed Roles** `admin`
 
 * **Request**
-  The userId must be presen as well as all fields to update, any field left undefined will not be updated.
+  The userid must be presen as well as all fields to update, any field left undefined will not be updated.
   ```javascript
     User
   ```
@@ -179,14 +179,14 @@ Reimbursements should be ordered by date
 ### **Find Reimbursements By User**  
 Reimbursements should be ordered by date
 * **URL**
-  `/reimbursements/author/userId/:userId`  
+  `/reimbursements/author/userid/:userid`  
   For a challenge you could do this instead:  
-  `/reimbursements/author/userId/:userId/date-submitted?start=:startDate&end=:endDate`
+  `/reimbursements/author/userid/:userid/date-submitted?start=:startDate&end=:endDate`
 
 * **Method:**
   `GET`
 
-* **Allowed Roles** `finance-manager` or if ther userId is the user making the request.
+* **Allowed Roles** `finance-manager` or if ther userid is the user making the request.
 
 * **Response:**
     ```javascript

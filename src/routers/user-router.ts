@@ -39,22 +39,22 @@ userRouter.get('/:id', authorizationMiddleware (['admin', 'finance-manager']), a
 // Update User
 
 userRouter.patch('/', authorizationMiddleware(['admin']), async (req:Request, res:Response, next:NextFunction)=>{
-    let { userId,
+    let { userid,
         username,
         password,
         firstName,
         lastName,
         email,
         role } = req.body
-    if(!userId) { 
+    if(!userid) { 
         res.status(400).send('Id must be a number')
     }
-    else if(isNaN(+userId)) { 
+    else if(isNaN(+userid)) { 
         res.status(400).send('Please enter a valid Id')
     }
     else {
         let updatedUser:User = {
-            userId,
+            userid,
             username,
             password,
             firstName,
@@ -89,7 +89,7 @@ userRouter.post('/', async (req:Request, res:Response, next:NextFunction) => {
         role } = req.body
     if(username && password && firstName && lastName && email && role) {
         let newUser: User = {
-            userId: 0,
+            userid: 0,
             username,
             password,
             firstName,
