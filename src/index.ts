@@ -35,6 +35,6 @@ app.use((err, req, res, next) => {
     res.status(500).send("Oops, Something went wrong");
   }
 })
-app.listen(4200, () => {
+app.listen(2006, () => {
     console.log("Server Is Running");
 })

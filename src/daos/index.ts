@@ -1,9 +1,9 @@
 import { Pool } from "pg";
 export const connectionPool: Pool = new Pool({
-  host: process.env["LB_HOST"],
-  user: process.env["LB_USER"],
-  password: process.env["LB_PASSWORD"],
-  database: process.env["LB_DATABASE"],
+  host: process.env["fluffers_reimbursement_HOST"],
+  user: process.env["fluffers_reimbursement_USER"],
+  password: process.env["fluffers_reimbursement_PASSWORD"],
+  database: process.env["fluffers_reimbursement_DATABASE"],
   port: 5432,
-  max: 5,
+  max: 5
 });

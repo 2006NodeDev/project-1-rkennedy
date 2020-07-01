@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-
+import { InvalidCredentialsError } from "../errors/InvalidCredentialsError";
 
 export function authenticationMiddleware(req:Request, res:Response, next:NextFunction){
     if(!req.session.user) {
-        res.status(401).send('Please Login')// this could be an error as well
+        throw new InvalidCredentialsError()
     } else{
         console.log(`user ${req.session.user.username} has a role of ${req.session.user.role}`);
         next()
