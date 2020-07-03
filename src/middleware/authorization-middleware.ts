@@ -5,32 +5,33 @@
 
 import { Request, Response, NextFunction } from "express";
 
-// utilize the factory pattern, we provide an array of accepted roles, and return a function that allows those roles through
-// this function is a middleware factory
-export function authorizationMiddleware(roles:string[]){// build a middleware function
+
+
+export function authorizationMiddleware(roles: string[], userId?: boolean){
     return (req:Request, res:Response, next:NextFunction) => {
         let allowed = false
-        for(const role of roles){
-            if(req.session.user.role === role){
-                //we found a matching role, allow them in
+console.log(req.session.user.role.role)
+            if(req.session.user.role.role == roles){
+                console.log(roles);
+
                 allowed = true
-                next()
+
+            }
+        if(userId){
+            let id = +req.params.userId
+
+            if(!isNaN(id)){
+                if(req.session.user.userId == id) {
+                    allowed = true
+                }
             }
         }
-        if(!allowed){
-            // if they didn't have a matching role kick them out
-            res.status(401).send('The incoming token has expired')
+
+        if(allowed){
+            next()
+        }else{
+            res.status(401).send('The incoming token has expired');
         }
     }
 
 }
-
-//need to do this?
-// allow admin+manager
-
-//allow only admin
-
-//allow user + manage + admin
-
-//allow user + admin
-

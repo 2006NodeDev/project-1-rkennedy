@@ -11,7 +11,7 @@ userRouter.use(authenticationMiddleware); // Authenticate User
 
 // Get all Users
 
-userRouter.get('/', authorizationMiddleware(['admin']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.get('/', authorizationMiddleware(['Admin']), async (req:Request, res:Response, next:NextFunction)=>{
     try{
         let allUsers = await getAllUsers()
         res.json(allUsers)
@@ -21,8 +21,7 @@ userRouter.get('/', authorizationMiddleware(['admin']), async (req:Request, res:
 })
 
 // Get User by Id
-
-userRouter.get('/:id', authorizationMiddleware (['admin', 'finance-manager']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.get('/:id', authorizationMiddleware (['Admin', 'Finance Manager']), async (req:Request, res:Response, next:NextFunction)=>{
     let {id} = req.params
     if(isNaN(+id)){
         res.status(400).send('Id must be a number')
@@ -38,7 +37,7 @@ userRouter.get('/:id', authorizationMiddleware (['admin', 'finance-manager']), a
 
 // Update User
 
-userRouter.patch('/', authorizationMiddleware(['admin']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.patch('/', authorizationMiddleware(['Admin']), async (req:Request, res:Response, next:NextFunction)=>{
     let { userid,
         username,
         password,
