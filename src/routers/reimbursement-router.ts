@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express'
 import { reimbursementStatusRouter } from './reimbursement-status-router'
 import { reimbursementAuthorRouter } from './reimbursement-author-router'
 import { Reimbursement } from '../models/Reimbursement'
-import { saveOneReimbursement, updateReimbursement } from '../daos/reimbursement-dao'
+import { saveOneReimbursement, updatereimbursement } from '../daos/reimbursement-dao'
 import { ReimbursementIdInputError } from '../errors/ReimbursementInputError'
 //import { authorizationMiddleware } from '../middleware/authorization-middleware'
 export const reimbursementRouter = express.Router()
@@ -14,17 +14,17 @@ reimbursementRouter.post('/', async (req:Request, res:Response, next:NextFunctio
     let {
         author,
         amount,
-        dateSubmitted,
+        datesubmitted,
         description,
         status,
         type } = req.body
-    if(author && amount && dateSubmitted && description && status && type) {
+    if(author && amount && datesubmitted && description && status && type) {
         let newReim: Reimbursement = {
             reimbursementId: 0,
             author,
             amount,
-            dateSubmitted,
-            dateResolved: null,
+            datesubmitted,
+            dateresolved: null,
             description,
             resolver: null,
             status,
@@ -47,8 +47,8 @@ reimbursementRouter.patch('/', async (req:Request, res:Response, next:NextFuncti
     let { reimbursementId,
         author,
         amount,
-        dateSubmitted,
-        dateResolved,
+        datesubmitted,
+        dateresolved,
         description,
         resolver,
         status,
@@ -64,8 +64,8 @@ reimbursementRouter.patch('/', async (req:Request, res:Response, next:NextFuncti
             reimbursementId, 
             author,
             amount,
-            dateSubmitted,
-            dateResolved,
+            datesubmitted,
+            dateresolved,
             description,
             resolver,
             status,
@@ -73,14 +73,14 @@ reimbursementRouter.patch('/', async (req:Request, res:Response, next:NextFuncti
         }
         updatedReimInfo.author = author || undefined
         updatedReimInfo.amount = amount || undefined
-        updatedReimInfo.dateSubmitted = dateSubmitted || undefined
-        updatedReimInfo.dateResolved = dateResolved || undefined
+        updatedReimInfo.datesubmitted = datesubmitted || undefined
+        updatedReimInfo.dateresolved = dateresolved || undefined
         updatedReimInfo.description = description || undefined
         updatedReimInfo.resolver = resolver || undefined
         updatedReimInfo.status = status || undefined
         updatedReimInfo.type = type || undefined
         try {
-            let results = await updateReimbursement(updatedReimInfo)
+            let results = await updatereimbursement(updatedReimInfo)
             res.json(results)
         } catch (e) {
             next(e)

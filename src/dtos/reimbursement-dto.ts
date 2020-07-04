@@ -1,11 +1,13 @@
-export class ReimbursementDTO{
-    reimbursementId: number
+export class ReimbursementDTO {
+  reimbursementid: number
     author: number
     amount: number
-    dateSubmitted: Date
-    dateResolved: Date
+    datesubmitted: Date
+    dateresolved: Date
     description: string
     resolver: number
-    status: number
-    type: number
-  }
+    status: string
+    statusid: number
+    type: string
+    typeid: number
+}

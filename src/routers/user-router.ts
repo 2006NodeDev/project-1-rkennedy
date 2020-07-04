@@ -41,8 +41,8 @@ userRouter.patch('/', authorizationMiddleware(['Admin']), async (req:Request, re
     let { userid,
         username,
         password,
-        firstName,
-        lastName,
+        firstname,
+        lastname,
         email,
         role } = req.body
     if(!userid) { 
@@ -56,15 +56,15 @@ userRouter.patch('/', authorizationMiddleware(['Admin']), async (req:Request, re
             userid,
             username,
             password,
-            firstName,
-            lastName,
+            firstname,
+            lastname,
             email,
             role
         }
         updatedUser.username = username || undefined
         updatedUser.password = password || undefined
-        updatedUser.firstName = firstName || undefined
-        updatedUser.lastName = lastName || undefined
+        updatedUser.firstname = firstname || undefined
+        updatedUser.lastname = lastname || undefined
         updatedUser.email = email || undefined
         updatedUser.role = role || undefined
         try {
@@ -82,17 +82,17 @@ userRouter.post('/', async (req:Request, res:Response, next:NextFunction) => {
     console.log(req.body);
     let { username,
         password,
-        firstName,
-        lastName,
+        firstname,
+        lastname,
         email,
         role } = req.body
-    if(username && password && firstName && lastName && email && role) {
+    if(username && password && firstname && lastname && email && role) {
         let newUser: User = {
             userid: 0,
             username,
             password,
-            firstName,
-            lastName,
+            firstname,
+            lastname,
             email,
             role
         }

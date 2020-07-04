@@ -3,14 +3,20 @@ import { Reimbursement } from "../models/Reimbursement";
 
 export function ReimbursementDTOtoReimbursementConvertor(bto:ReimbursementDTO):Reimbursement{
     return{
-        reimbursementId: bto.reimbursementId,
+        reimbursementId: bto.reimbursementid,
         author: bto.author,
         amount: bto.amount,
-        dateSubmitted: bto.dateSubmitted.getFullYear(),
-        dateResolved: bto.dateResolved.getFullYear(),
+        datesubmitted: new Date(bto.datesubmitted),
+        dateresolved: new Date(bto.dateresolved),
         description: bto.description,
         resolver: bto.resolver,
-        status: bto.status,
-        type: bto.type
+        status: {
+            status: bto.status,
+            statusId: bto.statusid
+        },
+        type: {
+            type: bto.type,
+            typeId: bto.typeid
+        }
     }
 }

@@ -1,7 +1,7 @@
 import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from ".";
 import { User } from "../models/User";
-import { UserDTOtoUserConvertor } from "../utils/UserDTO-to-User-convertor";
+import { UserDTOtoUserConverter } from "../utils/UserDTO-to-User-convertor";
 import { UserNotFoundError } from "../errors/UserNotFoundError"
 import { UserInputError } from "../errors/UserInputError";
 import { AuthFailureError } from '../errors/AuthFailureError';
@@ -13,16 +13,16 @@ export async function getAllUsers():Promise<User[]>{
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results:QueryResult = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.roleId, r."role" 
+        let results:QueryResult = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastname, u.email, r.roleid, r."role" 
                                                         from fluffers_reimbursement."User" u
-                                                        join fluffers_reimbursement."Role" r on u."role" = r.roleId
-                                                        group by u.userid, u.username, u.firstname, u.lastName, u.email, r.roleId, r."role"
+                                                        join fluffers_reimbursement."Role" r on u."role" = r.roleid
+                                                        group by u.userid, u.username, u.firstname, u.lastname, u.email, r.roleid, r."role"
                                                         order by u.userid;`);
         
         if (results.rowCount === 0){
             throw new Error('No Users Found');
         }
-        return results.rows.map(UserDTOtoUserConvertor);
+        return results.rows.map(UserDTOtoUserConverter);
         
     } catch (error) {
         if (error.message === "User Not Found"){
@@ -41,17 +41,17 @@ export async function getByUsernameAndPassword(username:string, password:string)
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.roleId, r."role" 
+        let results = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastname, u.email, r.roleId, r."role" 
                                             from fluffers_reimbursement.users u
-                                            join fluffers_reimbursement.roles r on u."role" = r.roleId
+                                            join fluffers_reimbursement.roles r on u."role" = r.roleid
                                             where u."username" = $1 and u."password" = $2
-                                            group by u.userid, u.username, u.firstname, u.lastName, u.email, r.roleId, r."role"`,
+                                            group by u.userid, u.username, u.firstname, u.lastname, u.email, r.roleid, r."role"`,
                                             [username, password]); // paramaterized queries, pg auto sanitizes
 
         if (results.rowCount === 0){
             throw new Error('User Not Found');
         }
-        return UserDTOtoUserConvertor(results.rows[0]);
+        return UserDTOtoUserConverter(results.rows[0]);
         
     } catch (error) {
         throw new AuthFailureError();
@@ -66,12 +66,12 @@ export async function getUserById(id:number):Promise<User>{
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results:QueryResult = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastName, u.email, r.roleId, r."role" 
+        let results:QueryResult = await client.query(`select u.userid, u.username, u.password, u.firstname, u.lastname, u.email, r.roleid, r."role" 
         from fluffers_reimbursement.users u
-        join fluffers_reimbursement.roles r on u."role" = r.roleId
+        join fluffers_reimbursement.roles r on u."role" = r.roleid
         where u.userid = $1`, [id]); // parameterized queries
 
-        return UserDTOtoUserConvertor(results.rows[0]);
+        return UserDTOtoUserConverter(results.rows[0]);
 
     } catch (error) {
         if (error.message === "User Not Found"){
@@ -92,9 +92,9 @@ export async function updateUser(updatedUser:User):Promise<User>{
         client = await connectionPool.connect()
 
         await client.query(`update fluffers_reimbursement.users 
-                                            set "username" = $1, "password" = $2, "firstName" = $3, "lastName" = $4, "email" = $5, "role" = $6
-                                            where userId = $7 returning "userId" `,
-                                            [updatedUser.username, updatedUser.password, updatedUser.firstName, updatedUser.lastName, updatedUser.email, updatedUser.role.roleId, updatedUser.userid])
+                                            set "username" = $1, "password" = $2, "firstName" = $3, "lastname" = $4, "email" = $5, "role" = $6
+                                            where userid = $7 returning "userid" `,
+                                            [updatedUser.username, updatedUser.password, updatedUser.firstname, updatedUser.lastname, updatedUser.email, updatedUser.role.roleid, updatedUser.userid])
         return getUserById(updatedUser.userid);
 
     }catch(e){
@@ -112,24 +112,24 @@ export async function saveOneUser(newUser:User):Promise<User> {
     try {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
-        let roleId = await client.query(`select r."roleId" 
+        let roleid = await client.query(`select r."roleid" 
                                         from fluffers_reimbursement.roles r 
                                         where r."role" = $1`,
                                         [newUser.role])
-        if(roleId.rowCount === 0) {
+        if(roleid.rowCount === 0) {
             throw new Error('Role Not Found')
         }
-        roleId = roleId.rows[0].roleId
+        roleid = roleid.rows[0].roleid
         let results = await client.query(`insert into fluffers_reimbursement.users 
                                         ("username", "password", 
-                                            "firstName", "lastName", 
+                                            "firstName", "lastname", 
                                             "email", "role")
                                         values($1,$2,$3,$4,$5,$6) 
-                                        returning "userId"`,
+                                        returning "userid"`,
                                         [newUser.username, newUser.password, 
-                                            newUser.firstName, newUser.lastName, 
-                                            newUser.email, roleId])
-        newUser.userid = results.rows[0].userId
+                                            newUser.firstname, newUser.lastname, 
+                                            newUser.email, roleid])
+        newUser.userid = results.rows[0].userid
         await client.query('COMMIT;')
         return newUser
     } catch (e) {

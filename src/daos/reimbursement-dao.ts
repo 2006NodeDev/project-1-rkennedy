@@ -4,17 +4,19 @@ import { Reimbursement } from "../models/Reimbursement";
 import { ReimbursementDTOtoReimbursementConvertor } from "../utils/ReimbursementDTO-to-Reimbursement";
 import { ReimbursementNotFoundError } from "../errors/ReimbursementNotFoundError";
 import { ReimbursementIdInputError } from "../errors/ReimbursementInputError";
-//import { UserInputError } from "../errors/UserInputError";
-//import { AuthorizationError } from '../errors/AuthorizationError'
-// Get all Reimbursements
+
 export async function getAllReimbursements():Promise<Reimbursement[]>{
     let client:PoolClient;
     try {
         client = await connectionPool.connect();
-        let results:QueryResult = await client.query(`select r.*, rs.status, rs."statusId", rt."type", rt."typeId" from fluffers_reimbursement.reimbursement r
-                                                        join fluffers_reimbursement.reimbursement_status rs on r.status = rs.statusId
-                                                        join fluffers_reimbursement.reimbursement_type rt on r."type" = rt.typeId
-                                                        order by r.date_submitted;`);       
+        let results:QueryResult = await client.query(`select r.*, 
+                                                            rs.status, 
+                                                            rs.statusid, 
+                                                            rt."type", 
+                                                            rt.typeid from fluffers_reimbursement.reimbursement r
+                                                        join fluffers_reimbursement.reimbursement_status rs on r.status = rs.statusid
+                                                        join fluffers_reimbursement.reimbursement_type rt on r."type" = rt.typeid
+                                                        order by r.datesubmitted;`);       
         if (results.rowCount === 0){
             throw new Error('No Reimbursements Found');
         }
@@ -47,8 +49,8 @@ export async function getReimbursementByuserid(userid:number):Promise<Reimbursem
                                             left join fluffers_reimbursement.reimbursement_types rt
                                                 on r."type" = rt."typeId"
                                             left join fluffers_reimbursement.users u 
-                                                on r."author" = u."userId"
-                                                    where u."userId" = $1
+                                                on r."author" = u."userid"
+                                                    where u."userid" = $1
                                             order by r.date_submitted;`, [userid])
         if(results.rowCount === 0) {
             throw new Error('Reimbursement Not Found')
@@ -124,7 +126,7 @@ export async function saveOneReimbursement(newReim:Reimbursement):Promise<Reimbu
                                         "date_submitted", "description", "status", "type")
                                             values($1,$2,$3,$4,$5,$6) 
                                         returning "reimbursementId";`,
-                                        [newReim.author, newReim.amount, newReim.dateSubmitted,
+                                        [newReim.author, newReim.amount, newReim.datesubmitted,
                                             newReim.description, statusId, typeId]) 
         newReim.reimbursementId = results.rows[0].reimbursementId
         await client.query('COMMIT;')
@@ -141,7 +143,7 @@ export async function saveOneReimbursement(newReim:Reimbursement):Promise<Reimbu
     }
 }
 // Update Reimbursement
-export async function updateReimbursement(updatedReimbursement:Reimbursement):Promise<Reimbursement> {
+export async function updatereimbursement(updatedReimbursement:Reimbursement):Promise<Reimbursement> {
     let client:PoolClient
     try {
         client = await connectionPool.connect()
@@ -156,15 +158,15 @@ export async function updateReimbursement(updatedReimbursement:Reimbursement):Pr
                                 where "reimbursementId" = $2;`, 
                                 [updatedReimbursement.amount, updatedReimbursement.reimbursementId])
         }
-        if(updatedReimbursement.dateSubmitted) {
+        if(updatedReimbursement.datesubmitted) {
             await client.query(`update fluffers_reimbursement.reimbursements set "date_submitted" = $1 
                                 where "reimbursementId" = $2;`, 
-                                [updatedReimbursement.dateSubmitted, updatedReimbursement.reimbursementId])
+                                [updatedReimbursement.datesubmitted, updatedReimbursement.reimbursementId])
         }
-        if(updatedReimbursement.dateResolved) {
+        if(updatedReimbursement.dateresolved) {
             await client.query(`update fluffers_reimbursement.reimbursements set "date_resolved" = $1 
                                 where "reimbursementId" = $2;`, 
-                                [updatedReimbursement.dateResolved, updatedReimbursement.reimbursementId])
+                                [updatedReimbursement.dateresolved, updatedReimbursement.reimbursementId])
         }
         if(updatedReimbursement.description) {
             await client.query(`update fluffers_reimbursement.reimbursements set "description" = $1 
