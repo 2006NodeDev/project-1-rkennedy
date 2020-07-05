@@ -1,4 +1,4 @@
 export class Role{
-    roleid: number; // primary key
+    role_id: number; // primary key
     role: String; // not null, unique
   }

@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { authenticationMiddleware } from '../middleware/authentication-middleware';
 import { authorizationMiddleware } from '../middleware/authorization-middleware';
-import { getAllUsers, getUserById, updateUser, saveOneUser } from '../daos/user-dao'
+import { getAllUsers, getUserById, updateOneUser, saveOneUser } from '../daos/user-dao'
 import { User } from '../models/User'
 import { UserInputError } from "../errors/UserInputError";
 
@@ -10,8 +10,7 @@ export const userRouter = express.Router();
 userRouter.use(authenticationMiddleware); // Authenticate User
 
 // Get all Users
-
-userRouter.get('/', authorizationMiddleware(['Admin']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.get('/', authorizationMiddleware(['Admin', 'Finance']), async (req:Request, res:Response, next:NextFunction)=>{
     try{
         let allUsers = await getAllUsers()
         res.json(allUsers)
@@ -29,6 +28,7 @@ userRouter.get('/:id', authorizationMiddleware (['Admin', 'Finance Manager']), a
         try {
             let user = await getUserById(+id)
             res.json(user)
+            //res.json(userById)
         } catch (e) {
             next(e)
         }
@@ -36,39 +36,38 @@ userRouter.get('/:id', authorizationMiddleware (['Admin', 'Finance Manager']), a
 })
 
 // Update User
-
 userRouter.patch('/', authorizationMiddleware(['Admin']), async (req:Request, res:Response, next:NextFunction)=>{
-    let { userid,
+    let { user_id,
         username,
         password,
-        firstname,
-        lastname,
+        first_name,
+        last_name,
         email,
         role } = req.body
-    if(!userid) { 
-        res.status(400).send('Id must be a number')
-    }
-    else if(isNaN(+userid)) { 
+    if(!user_id) { 
         res.status(400).send('Please enter a valid Id')
+    }
+    else if(isNaN(+user_id)) { 
+        res.status(400).send('Id must be a number')
     }
     else {
         let updatedUser:User = {
-            userid,
+            user_id,
             username,
             password,
-            firstname,
-            lastname,
+            first_name,
+            last_name,
             email,
             role
         }
         updatedUser.username = username || undefined
         updatedUser.password = password || undefined
-        updatedUser.firstname = firstname || undefined
-        updatedUser.lastname = lastname || undefined
+        updatedUser.first_name = first_name || undefined
+        updatedUser.last_name = last_name || undefined
         updatedUser.email = email || undefined
         updatedUser.role = role || undefined
         try {
-            let result = await updateUser(updatedUser)
+            let result = await updateOneUser(updatedUser)
             res.json(result)
         } catch (e) {
             next(e)
@@ -77,22 +76,21 @@ userRouter.patch('/', authorizationMiddleware(['Admin']), async (req:Request, re
 }) 
 
 // Save (Create) User
-
 userRouter.post('/', async (req:Request, res:Response, next:NextFunction) => {
     console.log(req.body);
     let { username,
         password,
-        firstname,
-        lastname,
+        first_name,
+        last_name,
         email,
         role } = req.body
-    if(username && password && firstname && lastname && email && role) {
+    if(username && password && first_name && last_name && email && role) {
         let newUser: User = {
-            userid: 0,
+            user_id: 0,
             username,
             password,
-            firstname,
-            lastname,
+            first_name,
+            last_name,
             email,
             role
         }

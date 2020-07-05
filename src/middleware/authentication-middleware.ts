@@ -5,7 +5,9 @@ export function authenticationMiddleware(req:Request, res:Response, next:NextFun
     if(!req.session.user) {
         throw new InvalidCredentialsError()
     } else{
-        console.log(`user ${req.session.user.username} has a role of ${req.session.user.role}`);
+        console.log(`User ${req.session.user.username} has a role of ` + req.session.user.role);
+        console.log(req.session.user.role)
+        
         next()
     }
 }

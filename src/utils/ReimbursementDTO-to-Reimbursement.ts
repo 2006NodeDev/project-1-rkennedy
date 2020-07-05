@@ -1,13 +1,13 @@
 import { ReimbursementDTO } from "../dtos/reimbursement-dto";
 import { Reimbursement } from "../models/Reimbursement";
 
-export function ReimbursementDTOtoReimbursementConvertor(bto:ReimbursementDTO):Reimbursement{
+export function ReimbursementDTOtoReimbursementConverter(bto:ReimbursementDTO):Reimbursement{
     return{
-        reimbursementId: bto.reimbursementid,
+        reimbursement_id: bto.reimbursement_id,
         author: bto.author,
         amount: bto.amount,
-        datesubmitted: new Date(bto.datesubmitted),
-        dateresolved: new Date(bto.dateresolved),
+        date_submitted: new Date(bto.date_submitted),
+        date_resolved: new Date(bto.date_resolved),
         description: bto.description,
         resolver: bto.resolver,
         status: {
@@ -16,7 +16,7 @@ export function ReimbursementDTOtoReimbursementConvertor(bto:ReimbursementDTO):R
         },
         type: {
             type: bto.type,
-            typeId: bto.typeid
+            type_id: bto.type_id
         }
     }
 }

@@ -7,11 +7,11 @@ The Expense Reimbursement System (ERS) will manage the process of reimbursing em
 The User model keeps track of users information.
 ```javascript
 {
-  userid: number, // primary key
+  user_id: number, // primary key
 	username: string, // not null, unique
 	password: string, // not null
-	firstName: string, // not null
-	lastname: string, // not null
+	first_name: string, // not null
+	last_name: string, // not null
 	email: string, // not null
 	role: Role // not null
 }
@@ -21,7 +21,7 @@ The User model keeps track of users information.
 The Role model is used to track what permissions a user has
 ```javascript
 {
-  roleId: number, // primary key
+  role_id: number, // primary key
   role: string // not null, unique
 }
 ```
@@ -30,11 +30,11 @@ The Role model is used to track what permissions a user has
 The Reimbursement model is used to represent a single reimbursement that an employee would submit
 ```javascript
 {
-  reimbursementId: number, // primary key
+  reimbursement_id: number, // primary key
 	author: number,  // foreign key -> User, not null
 	amount: number,  // not null
-  datesubmitted: number, // not null
-  dateresolved: number, // not null
+  date_submitted: number, // not null
+  date_resolved: number, // not null
   description: string, // not null
   resolver: number, // foreign key -> User
   status: number, // foreign ey -> ReimbursementStatus, not null
@@ -56,7 +56,7 @@ The ReimbursementStatus model is used to track the status of reimbursements. Sta
 The ReimbursementType model is used to track what kind of reimbursement is being submitted. Type possibilities are `Lodging`, `Travel`, `Food`, or `Other`.
 ```javascript
 {
-  typeId: number, // primary key
+  type_id: number, // primary key
   type: string, // not null, unique
 }
 ```
@@ -147,7 +147,7 @@ The ReimbursementType model is used to track what kind of reimbursement is being
 * **Allowed Roles** `admin`
 
 * **Request**
-  The userid must be presen as well as all fields to update, any field left undefined will not be updated.
+  The user_id must be presen as well as all fields to update, any field left undefined will not be updated.
   ```javascript
     User
   ```
@@ -179,14 +179,14 @@ Reimbursements should be ordered by date
 ### **Find Reimbursements By User**  
 Reimbursements should be ordered by date
 * **URL**
-  `/reimbursements/author/userid/:userid`  
+  `/reimbursements/author/user_id/:user_id`  
   For a challenge you could do this instead:  
-  `/reimbursements/author/userid/:userid/date-submitted?start=:startDate&end=:endDate`
+  `/reimbursements/author/user_id/:user_id/date-submitted?start=:startDate&end=:endDate`
 
 * **Method:**
   `GET`
 
-* **Allowed Roles** `finance-manager` or if ther userid is the user making the request.
+* **Allowed Roles** `finance-manager` or if ther user_id is the user making the request.
 
 * **Response:**
     ```javascript
@@ -203,7 +203,7 @@ Reimbursements should be ordered by date
   `POST`
 
 * **Rquest:**
-  The reimbursementId should be 0
+  The reimbursement_id should be 0
   ```javascript
   Reimbursement
   ```
@@ -225,7 +225,7 @@ Reimbursements should be ordered by date
 * **Allowed Roles** `finance-manager`
 
 * **Request**
-  The reimbursementId must be presen as well as all fields to update, any field left undefined will not be updated. This can be used to approve and deny.
+  The reimbursement_id must be presen as well as all fields to update, any field left undefined will not be updated. This can be used to approve and deny.
   ```javascript
     Reimbursement
   ```

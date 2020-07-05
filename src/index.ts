@@ -1,18 +1,49 @@
-import {loginRouter} from "./Routers/login-router"
-import { userRouter } from "./Routers/user-router"
-import { reimbursementRouter } from "./Routers/reimbursement-router"
-import express from 'express'
-import { sessionMiddleware } from "./middleware/session-middleware"
+import express, { Request, Response, NextFunction } from 'express'
+import { sessionMiddleware } from './middleware/session-middleware'
+import { userRouter } from './routers/user-router'
+import { reimbursementRouter } from './routers/reimbursement-router'
+import { loginByUsernameAndPassword } from './daos/user-dao'
+import { AuthenticationError } from './errors/AuthenticationError'
+import { loggingMiddleware } from './middleware/logging-middleware'
 
+const app = express() //Create express application
+app.use(express.json()) //Matches every HTTP verb, middleware
+app.use(loggingMiddleware) //Logs out request method, ip address making request, and path of request
+app.use(sessionMiddleware) //Attaches a session object to the request where each unique connection to the server has a unique session
+app.use('/users', userRouter) //Redirect all requests on /users to user-router
+app.use('/reimbursements', reimbursementRouter) //Redirect all requests on /reimbursements to reimbursement-router
 
+// Login 
+app.post('/login', async (req:Request, res:Response, next:NextFunction) => {
+    let username = req.body.username
+    let password = req.body.password
 
-    const app = express()
-    app.use(express.json())
-    
-    app.use(sessionMiddleware)
-    app.use("/login", loginRouter)
-    app.use("/users", userRouter)
-    app.use("/reimbursements", reimbursementRouter)
-    app.listen(2020, () => {
-        console.log("Yay! Server has started!")
-    })
+    if(!username || !password) {
+        throw new AuthenticationError();
+    }
+    else { 
+        try {
+            let user = await loginByUsernameAndPassword(username, password)
+            req.session.user = user
+            res.json(user)
+        } catch (e) {
+            next(e)
+        }
+    }
+})
+
+// Error Handling
+app.use((err, req, res, next) => {
+    if(err.statusCode) { 
+        res.status(err.statusCode).send(err.message) 
+    }
+    else { 
+        console.log(err);
+        res.status(500).send('Oops, something went wrong')
+    }
+})
+
+//Set port for sending/receiving requests
+app.listen(2020, () => {
+    console.log('Server Is Running');
+})
