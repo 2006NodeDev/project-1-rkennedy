@@ -1,5 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express"
+import { AuthorizationError } from "../errors/AuthorizationError"
 
+//Specifies which roles are allowed to do what 
 export function authorizationMiddleware(roles:string[]) {
     return  (req:Request, res:Response, next:NextFunction) => {
         let isAllowed = false
@@ -7,18 +9,21 @@ export function authorizationMiddleware(roles:string[]) {
             if(role === req.session.user.role.role) { 
                 isAllowed = true
                 next()
+                //break;
             } 
-            else if(role === 'Current') {
-                let id = req.url.substring(1) 
-                console.log(`Session Id: ${req.session.user.user_id}`); 
-                console.log((`Request Id: ${id}`)); 
-                if(req.session.user.user_id == id) {                     isAllowed = true
+            else if(role === 'Current') { //current Users can get their own reimByUserId and userById
+                let id = req.url.substring(1) //.url gets URI, substring gets /id after URI
+                console.log(`Session Id: ${req.session.user.userId}`); //Get userId of the user in the current session
+                console.log((`Request Id: ${id}`)); //userId of requested information
+                if(req.session.user.userId == id) { //If they match, they are authorized to see whatever they requested
+                    isAllowed = true
                     next()
+                    //break;
                 }
             }
         }
         if(!isAllowed) {
-            res.status(401).send('The incoming token has expired');
+            throw new AuthorizationError()
         }
     }
 }
