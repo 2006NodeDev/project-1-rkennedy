@@ -1,4 +1,4 @@
-export class ReimbursementTypes{
-    type_id: number; // primary key
+export class ReimbursementType{
+    typeId: number; // primary key
     type: string; // not null, unique
   }

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { AuthorizationError } from "../errors/AuthorizationError"
 
-//Specifies which roles are allowed to do what 
 export function authorizationMiddleware(roles:string[]) {
     return  (req:Request, res:Response, next:NextFunction) => {
         let isAllowed = false

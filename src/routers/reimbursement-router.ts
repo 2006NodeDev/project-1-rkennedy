@@ -2,8 +2,7 @@ import express, { Request, Response, NextFunction } from 'express'
 import { reimbursementStatusRouter } from './reimbursement-status-router'
 import { reimbursementAuthorRouter } from './reimbursement-author-router'
 import { Reimbursement } from '../models/Reimbursement'
-import { submitOneReimbursement, updateOneReimbursement } from '../daos/reimbursement-dao'
-//import { reimbursement_idInputError } from '../errors/ReimbursementInputError'
+import { submitOneReimbursement, updateOneReimbursement, getAllReimbursements } from '../daos/reimbursement-dao'
 import { authorizationMiddleware } from '../middleware/authorization-middleware'
 import { authenticationMiddleware } from '../middleware/authentication-middleware'
 import { UserInputError } from '../errors/UserInputError'
@@ -14,35 +13,45 @@ reimbursementRouter.use(authenticationMiddleware)
 reimbursementRouter.use('/status', reimbursementStatusRouter)
 reimbursementRouter.use('/author/user_id', reimbursementAuthorRouter)
 
-// Save (Create) Reimbursement
+//Get All Reimbursements
+reimbursementRouter.get('/', authorizationMiddleware(['Admin', 'Finance Manager']), async (req:Request, res:Response, next:NextFunction) => { 
+    try {
+        let allReims = await getAllReimbursements()
+        res.json(allReims)
+    } catch (e) {
+        next(e)
+    }
+})
+
+//Submit Reimbursement
 reimbursementRouter.post('/', authorizationMiddleware(['Admin', 'Finance Manager', 'User']), async (req:Request, res:Response, next:NextFunction) => {
     console.log(req.body);
-    let {
+    let { 
         author,
         amount,
-        date_submitted,
+        dateSubmitted,
         description,
         type } = req.body
-    if(author && amount && date_submitted && description && type) {
-        let newReim: Reimbursement = {
-            reimbursement_id: 0,
+    if(author && amount && dateSubmitted && description && type) {
+        let newReimbursement: Reimbursement = {
+            reimbursementId: 0,
             author,
             amount,
-            date_submitted,
-            date_resolved: null,
+            dateSubmitted,
+            dateResolved: null,
             description,
             resolver: null,
-            status: //automatically pending
-            {
-                status: 'Pending',
-                statusId: 1
-            },
+            status: //status is automatically 1:"Pending"
+                {
+                    status: 'Pending',
+                    statusId: 1
+                },
             type
         }
-        newReim.type = type || null
+        newReimbursement.type = type || null
         try {
-            let savedReim = await submitOneReimbursement(newReim)
-            res.json(savedReim)
+            let savedReimbursement = await submitOneReimbursement(newReimbursement)
+            res.json(savedReimbursement)
         } catch (e) {
             next(e)
         }
@@ -51,45 +60,46 @@ reimbursementRouter.post('/', authorizationMiddleware(['Admin', 'Finance Manager
         throw new UserInputError()
     }
 })
-// Update Reimbursement
+
+//Update Reimbursement, we assume Admin and Finance Manager have userId for each user
 reimbursementRouter.patch('/', authorizationMiddleware(['Admin', 'Finance Manager']), async (req:Request, res:Response, next:NextFunction) => {
-    let { reimbursement_id,
+    let { reimbursementId,
         author,
         amount,
-        date_submitted,
-        date_resolved,
+        dateSubmitted,
+        dateResolved,
         description,
         resolver,
         status,
         type } = req.body
-    if(!reimbursement_id) { 
-        res.status(400).send('Please Fill Out All Fields')
+    if(!reimbursementId) { //update request must contain a reimbursementId
+        res.status(400).send('Please enter a valid reimbursement Id')
     }
-    else if(isNaN(+reimbursement_id)) {
+    else if(isNaN(+reimbursementId)) { //check if reimbursementId is valid
         res.status(400).send('Id must be a number')
     }
     else { 
-        let updatedReimInfo:Reimbursement = { 
-            reimbursement_id, 
+        let updatedOneReimbursement:Reimbursement = { 
+            reimbursementId, 
             author,
             amount,
-            date_submitted,
-            date_resolved,
+            dateSubmitted,
+            dateResolved,
             description,
             resolver,
             status,
             type
         }
-        updatedReimInfo.author = author || undefined
-        updatedReimInfo.amount = amount || undefined
-        updatedReimInfo.date_submitted = date_submitted || undefined
-        updatedReimInfo.date_resolved = date_resolved || undefined
-        updatedReimInfo.description = description || undefined
-        updatedReimInfo.resolver = resolver || undefined
-        updatedReimInfo.status = status || undefined
-        updatedReimInfo.type = type || undefined
+        updatedOneReimbursement.author = author || undefined
+        updatedOneReimbursement.amount = amount || undefined
+        updatedOneReimbursement.dateSubmitted = dateSubmitted || undefined
+        updatedOneReimbursement.dateResolved = dateResolved || undefined
+        updatedOneReimbursement.description = description || undefined
+        updatedOneReimbursement.resolver = resolver || undefined
+        updatedOneReimbursement.status = status || undefined
+        updatedOneReimbursement.type = type || undefined
         try {
-            let results = await updateOneReimbursement(updatedReimInfo)
+            let results = await updateOneReimbursement(updatedOneReimbursement)
             res.json(results)
         } catch (e) {
             next(e)

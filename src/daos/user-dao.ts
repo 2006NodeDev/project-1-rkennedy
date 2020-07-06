@@ -1,7 +1,7 @@
+import { User } from "../models/User";
 import { PoolClient } from "pg";
 import { connectionPool } from ".";
-import { UserDTOtoUserConverter } from "../utils/UserDTO-to-User-Convertor";
-import { User } from "../models/user";
+import { UserDTOtoUserConverter } from "../utils/UserDTO-to-User-convertor";
 import { UserInputError } from "../errors/UserInputError";
 import { AuthenticationError } from "../errors/AuthenticationError";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
@@ -52,9 +52,9 @@ export async function saveOneUser(newUser:User):Promise<User> {
                                         values($1,$2,$3,$4,$5,$6) 
                                         returning "user_id"`,
                                         [newUser.username, newUser.password, 
-                                            newUser.first_name, newUser.last_name, 
+                                            newUser.firstName, newUser.lastName, 
                                             newUser.email, roleId])
-        newUser.user_id = results.rows[0].user_id
+        newUser.userId = results.rows[0].user_id
         await client.query('COMMIT;')
         return newUser
     } catch (e) {
@@ -145,27 +145,27 @@ export async function updateOneUser(updatedOneUser:User):Promise<User> {
         if(updatedOneUser.username) {
             await client.query(`update fluffers_reimbursement.users set "username" = $1 
                                     where "user_id" = $2;`, 
-                                    [updatedOneUser.username, updatedOneUser.user_id])
+                                    [updatedOneUser.username, updatedOneUser.userId])
         }
         if(updatedOneUser.password) {
             await client.query(`update fluffers_reimbursement.users set "password" = $1 
                                     where "user_id" = $2;`, 
-                                    [updatedOneUser.password, updatedOneUser.user_id])
+                                    [updatedOneUser.password, updatedOneUser.userId])
         }
-        if(updatedOneUser.first_name) {
+        if(updatedOneUser.firstName) {
             await client.query(`update fluffers_reimbursement.users set "first_name" = $1 
                                     where "user_id" = $2;`, 
-                                    [updatedOneUser.first_name, updatedOneUser.user_id])
+                                    [updatedOneUser.firstName, updatedOneUser.userId])
         }
-        if(updatedOneUser.last_name) {
+        if(updatedOneUser.lastName) {
             await client.query(`update fluffers_reimbursement.users set "last_name" = $1 
                                     where "user_id" = $2;`, 
-                                    [updatedOneUser.last_name, updatedOneUser.user_id])
+                                    [updatedOneUser.lastName, updatedOneUser.userId])
         }
         if(updatedOneUser.email) {
             await client.query(`update fluffers_reimbursement.users set "email" = $1 
                                     where "user_id" = $2;`, 
-                                    [updatedOneUser.email, updatedOneUser.user_id])
+                                    [updatedOneUser.email, updatedOneUser.userId])
         }
         if(updatedOneUser.role) {
             let roleId = await client.query(`select r."role_id" from fluffers_reimbursement.roles r 
@@ -177,7 +177,7 @@ export async function updateOneUser(updatedOneUser:User):Promise<User> {
             roleId = roleId.rows[0].role_id
             await client.query(`update fluffers_reimbursement.users set "role" = $1 
                                     where "user_id" = $2;`, 
-                                    [roleId, updatedOneUser.user_id])
+                                    [roleId, updatedOneUser.userId])
         }
 
         await client.query('COMMIT;')
