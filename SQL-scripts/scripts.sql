@@ -1,5 +1,5 @@
---create schema fluffers_reimbursement;
-set schema 'fluffers_reimbursement';
+--create schema astrology;
+set schema 'astrology';
 drop table Roles cascade;
 drop table ReimbursementStatus cascade;
 drop table ReimbursementTypes cascade;
