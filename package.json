@@ -1,7 +1,7 @@
 {
   "name": "astrology",
   "version": "1.0.0",
-  "description": "A relationship compatibility app that evaluates relationship compatibility based on your birth charts"
+  "description": "A relationship compatibility app that evaluates relationship compatibility based on your birth charts",
   "main": "src/index.ts",
   "scripts": {
     "start": "nodemon --exec ts-node src/index.ts",
