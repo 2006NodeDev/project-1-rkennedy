@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from 'express'
-import { profileStatusRouter } from './profile-status-router'
 import { profileAuthorRouter } from './profile-author-router'
 import { Profile } from '../models/Profile'
 import { submitOneProfile, updateOneProfile, getAllProfiles } from '../daos/profile-dao'
@@ -10,8 +9,7 @@ import { ProfileInputError } from '../errors/ProfileInputError'
 export const profileRouter = express.Router()
 
 profileRouter.use(authenticationMiddleware)
-profileRouter.use('/status', profileStatusRouter)
-profileRouter.use('/author/user_id', profileAuthorRouter)
+profileRouter.use('/owner/user_id', profileAuthorRouter)
 
 //Get All profiles
 profileRouter.get('/', authorizationMiddleware(['Admin']), async (req:Request, res:Response, next:NextFunction) => { 

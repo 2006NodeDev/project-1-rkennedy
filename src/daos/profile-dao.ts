@@ -31,7 +31,7 @@ export async function getAllProfiles():Promise<Profile[]> {
 }
 
 // Find Profiles by Relationship
-export async function getProfileByRelationship(relationship:number):Promise<Booking[]> {
+export async function getProfileByRelationship(relationship:number):Promise<Profile[]> {
     let client:PoolClient
     try {
         client = await connectionPool.connect()
@@ -48,11 +48,11 @@ export async function getProfileByRelationship(relationship:number):Promise<Book
                                                     where p."relationship" = $1
                                                     order by p.full_name;`, [relationship])
         if(results.rowCount === 0) {
-            throw new Error('Booking Not Found')
+            throw new Error('Profile Not Found')
         }
         return results.rows.map(ProfileDTOtoProfileConverter);
     } catch (e) {
-        if(e.message === 'Booking Not Found') {
+        if(e.message === 'Profile Not Found') {
             throw new ProfileNotFoundError()
         }
         console.log(e);
