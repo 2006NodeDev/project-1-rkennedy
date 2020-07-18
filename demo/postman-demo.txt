@@ -1,0 +1,213 @@
+1) POST --> http://localhost:2006/login
+
+// Body
+
+{
+    "username" : "",
+    "password" : ""
+}
+
+// Output (LOGIN BY USER)
+
+{
+    "userId": ,
+    "username": "",
+    "password": "",
+    "firstName": "",
+    "lastName": "",
+    "email": "",
+    "role": {
+        "role": "",
+        "roleId": 
+    }
+}
+
+-----------------------------------------------------
+
+2) POST --> http://localhost:2006/login
+
+// Body
+
+{
+    "username" : "",
+    "password" : ""
+}
+
+// Output (LOGIN BY USER)
+
+{
+    "userId": ,
+    "username": "",
+    "password": "",
+    "firstName": "",
+    "lastName": "",
+    "email": "",
+    "role": {
+        "role": "",
+        "roleId": 
+    }
+}
+
+-----------------------------------------------------
+
+3) GET --> http://localhost:2006/users
+
+// Body
+
+(GET DOESN'T HAVE A BODY)
+
+// Output
+
+(FINDS USERS - ALL)
+
+-----------------------------------------------------
+
+4) GET --> http://localhost:2006/users/4
+
+// Body
+
+(GET DOESN'T HAVE A BODY)
+
+// Output (FIND USERS BY ID)
+
+{
+    "userId": ,
+    "username": "",
+    "password": "",
+    "firstName": "",
+    "lastName": "",
+    "email": "",
+    "role": {
+        "role": "",
+        "roleId": 
+    }
+}
+
+-----------------------------------------------------
+
+5) PATCH --> http://localhost:2006/users
+
+// Body
+
+{
+    "userId": ,
+    "username": "",
+    "password": ""
+}
+
+// Output (UPDATE USER)
+
+{
+    "userId": 8,
+    "username": "",
+    "password": ""
+}
+
+-----------------------------------------------------
+
+6) GET --> http://localhost:2006/bookings
+
+// Body
+
+(GET DOESN'T HAVE A BODY)
+
+// Output (FIND BOOKINGS - ALL)
+
+-----------------------------------------------------
+
+7) GET --> http://localhost:2006/bookings/status/1 
+
+// Body
+
+(GET DOESN'T HAVE A BODY)        
+
+// Output (FIND BOOKING BY STATUS - PENDING (1))
+
+[
+    {
+        "bookingId": ,
+        "venue": ,
+        "payment": "",
+        "gigDate": "",
+        "dateSubmitted": "",
+        "dateResolved": "",
+        "description": "",
+        "status": {
+            "status": "",
+            "statusId": 
+        },
+        "type": {
+            "type": "",
+            "typeId": 
+        }
+    }
+]
+
+-----------------------------------------------------
+
+8) GET --> http://localhost:2006/bookings/userId/4
+
+// Body
+
+(GET DOESN'T HAVE A BODY)
+
+// Output (FIND BOOKING BY USER)
+
+[
+    {
+        "bookingId": ,
+        "venue": ,
+        "payment": "",
+        "gigDate": "",
+        "dateSubmitted": "",
+        "dateResolved": "",
+        "description": "",
+        "status": {
+            "status": "",
+            "statusId": 
+        },
+        "type": {
+            "type": "",
+            "typeId": 
+        }
+    }
+]
+
+-----------------------------------------------------
+
+9) POST --> http://localhost:2006/bookings
+
+// Body
+
+   {
+        "venue": ,
+        "payment": "",
+        "gigDate": "",
+        "dateSubmitted": "",
+        "description": "",
+        "type": ""
+    }
+
+// Output (SUBMIT BOOKING)
+
+
+
+-----------------------------------------------------
+
+10) PATCH --> http://localhost:2006/bookings
+
+// Body
+
+{
+    "bookingId": ,
+    "venue": ,
+    "description": ""
+}
+
+// Output (UPDATE BOOKING)
+
+{
+    "bookingId": ,
+    "venue": ,
+    "description": ""
+}
