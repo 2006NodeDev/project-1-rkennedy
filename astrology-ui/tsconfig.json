@@ -24,7 +24,6 @@
     "strictNullChecks": false
   },
   "include": [
-    "src",
-    "tests"
+    "src"
   ]
 }
