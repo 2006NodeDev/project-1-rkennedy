@@ -7,4 +7,5 @@ export class UserDTO {
     email: string
     role_id: number
     role: string
+    image?: string //this is a path to the file in cloud storage
   }

@@ -1,16 +1,10 @@
+//this is where we set up the cloud storage bucket and the like
 import {Storage} from '@google-cloud/storage'
+//bucket Name
+export const bucketName = 'astrology-image-bucket'
 
-const storage = new Storage();
+//full http path to that bucket // the base path for images
+export const bucketBaseUrl = `https://storage.googleapis.com/${bucketName}`
 
-(async ()=>{
-    const [[bucket]] = await storage.getBuckets({
-        prefix:'node-2006-demos-2'
-    })//prefix option will allow you to narrow down the buckets by name
-    await bucket.upload('./tsconfig.json', {
-        //set things like metadata
-        destination:'demos/tsconfig.json',
-        metadata:{
-            contentType:'application/json'
-        }
-    })
-})()
+//bucket itself
+export const imageBucket = new Storage().bucket(bucketName)

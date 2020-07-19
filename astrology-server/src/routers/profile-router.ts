@@ -22,7 +22,7 @@ profileRouter.get('/', authorizationMiddleware(['Admin']), async (req:Request, r
 })
 
 //Submit profile
-profileRouter.post('/', authorizationMiddleware(['Admin', 'User']), async (req:Request, res:Response, next:NextFunction) => {
+profileRouter.post('/', authorizationMiddleware(['Admin', 'User', 'Current']), async (req:Request, res:Response, next:NextFunction) => {
     console.log(req.body);
     let { 
         ownerId,
