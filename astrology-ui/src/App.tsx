@@ -5,7 +5,7 @@ import { FirstComponent } from './components/FirstComponent/FirstComponent';
 import { TitleComponent } from './components/TitleComponent/TitleComponent';
 import { FancyBorder } from './components/FancyBorderComponent/FancyBorderComponent';
 import { NavBarComponent } from './components/NavBarComponent/NavBarComponent';
-import { ClickerComponent } from './components/ClickerComponent/ClickerComponent';
+//import { ClickerComponent } from './components/ClickerComponent/ClickerComponent';
 import { LoginComponent } from './components/LoginComponent/LoginComponent';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { User } from './models/user';
@@ -32,15 +32,8 @@ function App() {
         <Route path='/first'>
           <FirstComponent />
         </Route>
-
         {/* this is how you use a component in react
           just like any other html tag */}
-        <Route path='/clicker'>
-          {/* With route, we can supply the component to render as a child */}
-          <FancyBorder>
-            <ClickerComponent user={currentUser}/>
-          </FancyBorder>
-        </Route>
         <Route path='/title' render={(props) => (
           // we are making an anonymous react component using the render field
           //this gives the best of both world, we can make complicated component combos and give them router props

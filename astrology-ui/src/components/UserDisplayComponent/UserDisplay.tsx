@@ -38,7 +38,7 @@ export const UserDisplayComponent:FunctionComponent<IUserDisplayProps> = (props)
                    Email : {props.user.email}
                 </Typography>
                 <Typography variant='body1'>
-                   Role : {props.user.role}
+                   Role : {props.user.role.role}
                 </Typography>
                 <Button variant='contained' color='inherit'>Edit</Button>
             </Paper>

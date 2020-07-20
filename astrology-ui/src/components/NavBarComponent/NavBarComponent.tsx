@@ -40,13 +40,13 @@ export const NavBarComponent: FunctionComponent<any> = (props) => {
     //we can programmatically build the menu items
     let menuItems = []
     //always have the login item
-    menuItems.push(<MenuItem onClick={handleClose}><Link to='/login'>Login</Link></MenuItem>)
+    menuItems.push(<MenuItem onClick={handleClose} key='menuItemOne'><Link to='/login'>Login</Link></MenuItem>)
     if(props.user){
         //if they are logged in, add the other items
-        menuItems.push(<MenuItem onClick={handleClose}><Link to='/clicker'>Clicker</Link></MenuItem>,
-        <MenuItem onClick={handleClose}><Link to='/first'>First</Link></MenuItem>,
-        <MenuItem onClick={handleClose}><Link to='/title'>Title</Link></MenuItem>,
-        <MenuItem onClick={handleClose}><Link to={`/profile/${(props.user)?props.user.userId : '0' }`}>My Profile</Link></MenuItem>)
+        menuItems.push(<MenuItem onClick={handleClose} key='menuItemTwo'><Link to='/clicker'>Clicker</Link></MenuItem>,
+        <MenuItem onClick={handleClose} key='menuItemThree'><Link to='/first'>First</Link></MenuItem>,
+        <MenuItem onClick={handleClose} key='menuItemFour'><Link to='/title'>Title</Link></MenuItem>,
+        <MenuItem onClick={handleClose} key='menuItemFive'><Link to={`/profile/${(props.user)?props.user.userId : '0' }`}>My Profile</Link></MenuItem>)
     }
     if(props.user && props.user.role === 'Admin'){
         menuItems.push(<MenuItem onClick={handleClose}><Link to='/users'>All Users</Link></MenuItem>,)
