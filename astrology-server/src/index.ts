@@ -5,9 +5,11 @@ import { profileRouter } from './routers/profile-router'
 import { loginByUsernameAndPassword } from './daos/user-dao'
 import { AuthenticationError } from './errors/AuthenticationError'
 import { loggingMiddleware } from './middleware/logging-middleware'
+import { corsFilter } from './middleware/cors-filter'
 
 const app = express() //Creates complete express application
 app.use(express.json()) //Matches every HTTP verb, middleware
+app.use(corsFilter)
 app.use(loggingMiddleware) //Logs out request method, ip address making request, and path of request
 app.use(sessionMiddleware) //Attaches a session object to the request where each unique connection to the server has a unique session
 app.use('/users', userRouter) //Redirect all requests on /users to user-router

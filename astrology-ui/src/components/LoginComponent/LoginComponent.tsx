@@ -14,6 +14,7 @@ export const LoginComponent:FunctionComponent<ILoginProps> = (props) => {
     //we need to keep track of a username and a password
     const [username, changeUsername] = useState('')// two bits of state from react
     const [password, changePassword] = useState('')// one for username, one for password
+    console.log(username + password)
     // there used to be the user state here - now it is from props
 
     const updateUsername = (event:any) => {//callback for events
@@ -25,13 +26,14 @@ export const LoginComponent:FunctionComponent<ILoginProps> = (props) => {
         event.preventDefault()
         changePassword(event.currentTarget.value)
     }
-
+    console.log(username + password)
     const loginSubmit = async (e:SyntheticEvent) => {//sythentic events are react interface for converting between the many different types of browser events
         e.preventDefault()
         let res = await astrologyLogin(username, password)
         props.changeCurrentUser(res)
         changePassword('')
         props.history.push('/clicker')
+        console.log(props.changeCurrentUser)
     }
 
     return (
