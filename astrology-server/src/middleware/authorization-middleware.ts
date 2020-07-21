@@ -1,26 +1,34 @@
-import { Request, Response, NextFunction } from "express"
-import { AuthorizationError } from "../errors/AuthorizationError"
+import { Request, Response, NextFunction } from "express";
 
-export function authorizationMiddleware(roles:string[]) {
-    return  (req:Request, res:Response, next:NextFunction) => {
-        let isAllowed = false
-        for(const role of roles) { 
-            if(role === req.session.user.role.role) { 
-                isAllowed = true
-                next()
-            } 
-            else if(role === 'Current') { //current Users can get their own reimByUserId and userById
-                let id = req.url.substring(1) //.url gets URI, substring gets /id after URI
-                console.log(`Session Id: ${req.session.user.userId}`); //Get userId of the user in the current session
-                console.log((`Request Id: ${id}`)); //userId of requested information
-                if(req.session.user.userId == id) { //If they match, they are authorized to see whatever they requested
-                    isAllowed = true
-                    next()
+
+//same from lightly-burning
+export function authorizationMiddleware(roles:string[], currentUser: Boolean){ //get the roles, or check if their id matches
+
+    return (req: Request, res:Response, next:NextFunction) =>{
+        let allowed = false
+            
+        for (const role of roles){//to allow a given role
+            if (req.session.user.role === role){
+                allowed =true
+                console.log(`role: ${role}, input role:${req.session.user.role}`);
+            }
+        }
+        if (currentUser){  //if we are checking for current user
+            let id = +req.params.userId //get the id from path
+            if (!isNaN(id)){
+                if (req.session.user.userId == id) { //watch for type coersion
+                    allowed = true
                 }
             }
         }
-        if(!isAllowed) {
-            throw new AuthorizationError()
+        if (allowed) { //have to wait to make sure both conditions are checked
+            next() 
+        } else { 
+             //if they don't have a matching role or the right id, kick them out
+             res.status(403).send("You have lack the permissions for this endpoint!")
         }
+
     }
+
 }
+

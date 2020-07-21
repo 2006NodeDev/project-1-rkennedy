@@ -1,13 +1,15 @@
+
 import session, { SessionOptions } from 'express-session'
 
+//config object
 const sessionConfig:SessionOptions = {
-    secret: 'secret',
+    secret: "secret", 
     cookie:{
-        secure:false
+        secure:false 
     },
     resave:false,
     saveUninitialized:false
 }
 
-
-export const sessionMiddleware = session(sessionConfig)
+//function factory
+export const sessionMiddleware = session(sessionConfig) 

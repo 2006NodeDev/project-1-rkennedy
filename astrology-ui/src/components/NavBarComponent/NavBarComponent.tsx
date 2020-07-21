@@ -1,80 +1,85 @@
-import React, { FunctionComponent } from 'react';
-import AppBar from '@material-ui/core/AppBar'
+import React, { FunctionComponent, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import {Link} from 'react-router-dom'
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import { Link } from 'react-router-dom';
+import { green } from '@material-ui/core/colors';
 
-//this is an example of Jss - a more js way of doing css
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        title: {
-            flexGrow: 1,
-        },
-    }),
-);
+const useStyles = makeStyles((theme) => ({ //change color too
+  root: {
+    flexGrow: 1,
+    background: '#1c3041'
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+    fontFamily: "Ubuntu"
+  },
+}));
 
-//this is the skeleton
-export const NavBarComponent: FunctionComponent<any> = (props) => {
-    const classes = useStyles();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+export const NavBarComponent:FunctionComponent<any> = (props) => {
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
+  const handleClick = (event:any) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    //we can programmatically build the menu items
-    let menuItems = []
-    //always have the login item
-    menuItems.push(<MenuItem onClick={handleClose} key='menuItemOne'><Link to='/login'>Login</Link></MenuItem>)
-    if(props.user){
-        //if they are logged in, add the other items
-        menuItems.push(<MenuItem onClick={handleClose} key='menuItemTwo'><Link to='/clicker'>Clicker</Link></MenuItem>,
-        <MenuItem onClick={handleClose} key='menuItemThree'><Link to='/first'>First</Link></MenuItem>,
-        <MenuItem onClick={handleClose} key='menuItemFour'><Link to='/title'>Title</Link></MenuItem>,
-        <MenuItem onClick={handleClose} key='menuItemFive'><Link to={`/profile/${(props.user)?props.user.userId : '0' }`}>My Profile</Link></MenuItem>)
-    }
-    if(props.user && props.user.role === 'Admin'){
-        menuItems.push(<MenuItem onClick={handleClose}><Link to='/users'>All Users</Link></MenuItem>,)
-    }
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
+  let menuItems = []
+  useEffect(()=>{
+      if (props.user === null){
+        menuItems = []
+        menuItems.push(
+          <Link to= "/login" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Login</MenuItem></Link>,
+          <Link to= "/register" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Sign Up</MenuItem></Link>,
+          <Link to= "/home" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Home</MenuItem></Link>)
+      }
+  })
 
-    return (
-        <nav>
-
-
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton onClick={handleClick} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}>
-                        {menuItems}
-                    </Menu>
-                    <Typography variant="h6" className={classes.title}>
-                        Astrology
-                </Typography>
-                    <Button color="inherit">Login</Button>
-                </Toolbar>
-            </AppBar>
-        </nav>
+  if (props.user) {
+    menuItems.push(
+      <Link to= "/home" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Home</MenuItem></Link>,
+      <Link to={`/user/profile/${(props.user)?props.user.userId : '0' }`} style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>User Profile</MenuItem></Link>,
+      <Link to ={`/user/update/${(props.user)?props.user.userId : '0' }`} style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Edit Account Details</MenuItem></Link>,
+      <Link to="/logout" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Logout</MenuItem></Link>)
+  } else {
+    menuItems.push(
+      <Link to= "/home" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Home</MenuItem></Link>,
+      <Link to= "/login" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Login</MenuItem></Link>,
+      <Link to= "/register" style={{ textDecoration:"none"}}><MenuItem onClick={handleClose}>Sign Up</MenuItem></Link>
     )
+  }
+    return (
+      <nav>
+        <AppBar position="static" className={classes.root}>
+          <Toolbar>
+            <IconButton onClick={handleClick} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+              <Menu id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}> 
+              {menuItems}
+              </Menu>
+            <Typography variant="h6" className={classes.title}>
+              Cosmic Connections
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </nav>     
+  );
 }

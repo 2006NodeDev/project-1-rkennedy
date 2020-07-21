@@ -1,11 +1,11 @@
+
 export class UserDTO {
-    user_id: number
-      username: string
-      password: string
-      first_name: string
-      last_name: string
-    email: string
-    role_id: number
-    role: string
-    image?: string //this is a path to the file in cloud storage
-  }
+    user_id : number
+    username : string
+    password : string 
+    first_name : string
+    last_name : string
+    email : string
+    role : string 
+    image?: string
+}

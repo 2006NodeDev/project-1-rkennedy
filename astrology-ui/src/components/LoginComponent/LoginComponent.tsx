@@ -1,49 +1,140 @@
-import React, { FunctionComponent, useState, SyntheticEvent } from 'react'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import { astrologyLogin } from '../../remote/astrology-api/astrology-login'
-import {RouteComponentProps} from 'react-router-dom'
+import React, { FunctionComponent, useState, SyntheticEvent } from "react"
+import { astrologyLogin } from "../../astrology-api/astrology-login"
+import { RouteComponentProps } from "react-router"
+import {TextField, Button, makeStyles, Container, CssBaseline, Typography, Grid, withStyles} from "@material-ui/core"
+import { Link } from "react-router-dom"
+import { toast } from "react-toastify"
 
-//the interface called route component props just defines history match and location
 interface ILoginProps extends RouteComponentProps{
     changeCurrentUser:(newUser:any)=>void
 }
 
 export const LoginComponent:FunctionComponent<ILoginProps> = (props) => {
+    const classes = useStyles();
+    const [username, changeUsername] = useState("")
+    const [password, changePassword] = useState("")
 
-    //we need to keep track of a username and a password
-    const [username, changeUsername] = useState('')// two bits of state from react
-    const [password, changePassword] = useState('')// one for username, one for password
-    console.log(username + password)
-    // there used to be the user state here - now it is from props
-
-    const updateUsername = (event:any) => {//callback for events
-        event.preventDefault()//stop the default behaviour of the event
-        changeUsername(event.currentTarget.value)//call the state changing function with new value from user
+    const updatePassword = (event:any) => { 
+        event.preventDefault() 
+        changePassword(event.currentTarget.value) 
     }
 
-    const updatePassword = (event:any) => {
+    const updateUsername = (event:any) => {
         event.preventDefault()
-        changePassword(event.currentTarget.value)
+        changeUsername(event.currentTarget.value) 
     }
-    console.log(username + password)
-    const loginSubmit = async (e:SyntheticEvent) => {//sythentic events are react interface for converting between the many different types of browser events
+    
+    const loginSubmit = async (e:SyntheticEvent) => { 
         e.preventDefault()
-        let res = await astrologyLogin(username, password)
-        props.changeCurrentUser(res)
-        changePassword('')
-        props.history.push('/clicker')
-        console.log(props.changeCurrentUser)
+        let res = await astrologyLogin(username, password) 
+        console.log(res)
+        
+        if (!res.userId){
+            toast.error('Invalid Login Credentials! Please try again.')
+            props.history.push(`/login`) 
+        } else {
+            props.changeCurrentUser(res) 
+            props.history.push(`/user/profile/${res.userId}`) 
+        }
     }
 
     return (
-        <div>
-            {/* by default the submit event in a form tries to send a get request to the href value in the form */}
-            <form autoComplete="off" onSubmit={loginSubmit}>
-                <TextField id="standard-basic" label="Username" value={username} onChange={updateUsername}/>
-                <TextField id="standard-basic" type='password' label="Password" value={password} onChange={updatePassword} />
-                <Button type='submit' variant="contained" color="primary">Login</Button>
+        <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+            <Typography component="h1" variant="h5">
+            Sign In
+            </Typography>
+            <form autoComplete="off" onSubmit={loginSubmit} className={classes.form} noValidate>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    value={username}
+                    onChange={updateUsername}
+                />
+                </Grid>
+                <Grid item xs={12}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={updatePassword}
+                />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                <CustomButton
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    className={classes.submit}
+                > Login
+                </CustomButton>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                <Link to= "/home" style={{ textDecoration:"none"}}>
+                <CustomButton
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    className={classes.submit}
+                > Cancel 
+                </CustomButton>
+                </Link>
+                </Grid>
+            </Grid>            
             </form>
         </div>
-    )
-}
+        </Container>
+        )
+    }
+    
+    
+const CustomButton = withStyles((theme) => ({
+    root: {
+        color: theme.palette.getContrastText('#ffb2e6'),
+        backgroundColor: "'#ffb2e6'",
+        '&:hover': {
+          backgroundColor: '#1c3041',
+        },
+    },
+  }))(Button);
+  
+//styles at the bottom because closer to html return
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+        width: '100%',
+        marginTop: theme.spacing(2),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+        backgroundColor: '#ffb2e6',
+        color: 'Purple',
+        fontSize: 18,
+    },
+    media: {
+
+    }
+}));

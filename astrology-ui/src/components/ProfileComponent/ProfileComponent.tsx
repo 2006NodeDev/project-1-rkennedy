@@ -1,15 +1,13 @@
-// this component will be on the path /profile/idnumber
-//we will use that id number to send a request to the api to get that user
-//we will pass that user into a user display component
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import { UserDisplayComponent } from '../UserDisplayComponent/UserDisplay';
-import { User } from '../../models/user';
-import { useParams} from 'react-router-dom'
-import { astrologyGetUserById } from '../../remote/astrology-api/astrology-get-by-id';
 
-export const ProfileComponent:FunctionComponent<any> =  (props)=>{
+import React, { FunctionComponent, useState, useEffect } from 'react';
+import { User } from '../../models/User';
+import { useParams} from 'react-router-dom'
+import { astrologyGetUserById } from '../../astrology-api/astrology-get-user-by-id';
+import { UserDisplayComponent } from '../UserDisplayComponent/UserDisplayComponent';
+
+export const ProfileComponent:FunctionComponent<any> = (props) => {
     let [userProfile, changeUserProfile] = useState<null | User>(null)
-    let {userId} = useParams()//come from match.params which is provided by router
+    let {userId} = useParams()
 
     // this will run after every single render
     useEffect(()=>{
@@ -27,14 +25,11 @@ export const ProfileComponent:FunctionComponent<any> =  (props)=>{
         //else do nothing
     })
     
-
-    //how do I do async stuff in a component?
-    //especially becasue we rely on the request for the component to work
-
+    //why is this not working?
     return (
         (userProfile)?
         <UserDisplayComponent user={userProfile} />
-        :
+        : 
         <div>
             <h3>User Not Found</h3>
         </div>

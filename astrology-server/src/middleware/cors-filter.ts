@@ -1,18 +1,19 @@
-
 import { Request, Response, NextFunction } from "express";
 
-export function corsFilter(req:Request, res:Response, next:NextFunction){
-    //we always, on every request options or not, have to set Access-Control-Allow-Origin header
-    res.header('Access-Control-Allow-Origin', `${req.headers.origin}`)//this is a dirty hack, its really bad, don't do it when you app is deployed or I will be very disappointed in you
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept')
+export function corsFilter(req:Request, res:Response, next: NextFunction){
+    //we always have to have the Access Control Allow part to allows stuff
+    res.header('Access-Control-Allow-Origin', req.headers.origin) //* is bad because lets any origin send requests; 
+    //this is a dirty hack. Don't do this when deploying an app
+    res.header('Access-Control-Allow-Headers', 'Orginin, Content-Type, Accept')
     res.header('Access-Control-Allow-Credentials', 'true')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE')
 
-    //the purpose of an options request is to figure out what kind of requests are allowed to made to the server
-    //we specify the kinds of requests using the headers of the response to the options request
+    //the purposed of OPTIONS is to figure out what kind of request are allowed to be made to the server
+    //we specify these kinds of requests uing the headers of the response to the options request
     if(req.method === 'OPTIONS'){
-        res.sendStatus(200)// will send back the options for pre flight requests
+        res.sendStatus(200) //will send back the options for the pre flight requests
     } else {
-        next()//allow the real request to go to the endpoint
+        next() //allow through
     }
+
 }
